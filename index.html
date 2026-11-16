@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calc</title>
+<style>
+  body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f2f2f2; }
+  .calc { background: white; padding: 16px; border-radius: 12px; width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  #display { width: 100%; font-size: 2em; text-align: right; padding: 10px; margin-bottom: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  button { font-size: 1.3em; padding: 16px 0; border: none; border-radius: 8px; background: #e0e0e0; cursor: pointer; }
+  button.op { background: #ff9f0a; color: white; }
+  button.wide { grid-column: span 2; }
+</style>
+</head>
+<body>
+<div class="calc">
+  <input id="display" readonly value="0">
+  <div class="grid">
+    <button onclick="clearAll()">C</button>
+    <button class="op" onclick="append('/')">÷</button>
+    <button class="op" onclick="append('*')">×</button>
+    <button onclick="backspace()">⌫</button>
+    <button onclick="append('7')">7</button>
+    <button onclick="append('8')">8</button>
+    <button onclick="append('9')">9</button>
+    <button class="op" onclick="append('-')">−</button>
+    <button onclick="append('4')">4</button>
+    <button onclick="append('5')">5</button>
+    <button onclick="append('6')">6</button>
+    <button class="op" onclick="append('+')">+</button>
+    <button onclick="append('1')">1</button>
+    <button onclick="append('2')">2</button>
+    <button onclick="append('3')">3</button>
+    <button class="op" onclick="calculate()">=</button>
+    <button class="wide" onclick="append('0')">0</button>
+    <button onclick="append('.')">.</button>
+    <button onclick="toggleSign()">±</button>
+  </div>
+</div>
+<script>
+  const display = document.getElementById('display');
+  function append(v) {
+    if (display.value === '0' && v !== '.') display.value = v;
+    else display.value += v;
+  }
+  function clearAll() { display.value = '0'; }
+  function backspace() {
+    display.value = display.value.slice(0, -1) || '0';
+  }
+  function toggleSign() {
+    display.value = display.value.startsWith('-')
+      ? display.value.slice(1)
+      : '-' + display.value;
+  }
+  function calculate() {
+    try {
+      const result = Function('"use strict"; return (' + display.value + ')')();
+      display.value = Number.isFinite(result) ? String(result) : 'Error';
+    } catch (e) {
+      display.value = 'Error';
+    }
+  }
+</script>
+</body>
+</html>
